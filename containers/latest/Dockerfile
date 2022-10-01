@@ -1,4 +1,4 @@
-FROM ubuntu AS download_qemu
+FROM debian:sid-20220912 AS download_qemu
 
 RUN mkdir -p /app
 
