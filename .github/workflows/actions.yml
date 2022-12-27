@@ -18,15 +18,22 @@ jobs:
   qemu-user-static:
     runs-on: ubuntu-latest
     env:
-      VERSION: 7.0.0-7
-      ORIGIN_VERSION: 7.0+dfsg-7
+      VERSION: 7.2.0-1-b1
+      ORIGIN_VERSION: 7.2+dfsg-1+b1
     steps:
       - uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+      - name: Get repository name
+        uses: actions/github-script@v1
+        id: repository_name
+        with:
+          script: |
+            return context.repo.repo
+          result-encoding: string
       - name: Set variables
         run: |
-          echo "DOCKER_REPO=docker.io/$GITHUB_REPOSITORY" >> $GITHUB_ENV
+          echo "DOCKER_REPO=docker.io/${{ secrets.DOCKER_USERNAME }}/${{ steps.repository_name.outputs.result }}" >> $GITHUB_ENV
       - name: Build
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
